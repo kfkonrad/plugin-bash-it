@@ -126,13 +126,17 @@ function bash-it-_git-num-remotes
   git remote | wc -l
 end
 
-function bash-it_git-upstream-remote
+function bash-it-_git-upstream-remote
   set -l upstream
   set upstream (bash-it _git-upstream) || return 1
 
   set -l branch
   set branch (bash-it _git-upstream-branch) || return 1
   echo "$upstream" | sed "s|/$branch||"
+end
+
+function bash-it-_git-upstream-branch-gone
+  test ""(git status -s -b | sed -e 's/.* //' | head -n1) = "[gone]"
 end
 
 ### WIP ###
