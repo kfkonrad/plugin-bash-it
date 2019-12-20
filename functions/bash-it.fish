@@ -143,10 +143,11 @@ end
 
 function bash-it-_git-remote-info
   # this catches empty strings
-  test ""(bash-it _git-upstream) = "" && return || true
+  #test (echo(echo bash-it _git-upstream)) = "" && return || true
   set -l same_branch_name
-  test (bash-it _git-branch) = (bash-it _git-upstream-branch) && set same_branch_name true || true
-  test (bash-it _git-branch) = (bash-it _git-upstream-branch) && set same_branch_name true
+  test (bash-it _git-branch) = (echo (bash-it _git-upstream-branch)) && set same_branch_name true || true
+  test (bash-it _git-branch) = (echo (bash-it _git-upstream-branch)) && set same_branch_name true
+  return
 
   if test "$SCM_GIT_SHOW_REMOTE_INFO" = "auto" && test (bash-it _git-num-remotes) -ge 2 ||
       test "$SCM_GIT_SHOW_REMOTE_INFO" = "true"
@@ -220,6 +221,7 @@ function bash-it-git_prompt_vars
     set -l SCM_GIT_DETACHED "false"
     set SCM_BRANCH "$SCM_THEME_BRANCH_PREFIX"(bash-it _git-friendly-ref)(bash-it _git-remote-info;echo)
   else
+    echo noob
     set SCM_GIT_DETACHED "true"
     set -l detached_prefix
     if bash-it _git-tag > /dev/null
