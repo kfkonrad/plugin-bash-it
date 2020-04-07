@@ -221,7 +221,6 @@ function bash-it-git_prompt_vars
     set -l SCM_GIT_DETACHED "false"
     set SCM_BRANCH "$SCM_THEME_BRANCH_PREFIX"(bash-it _git-friendly-ref)(bash-it _git-remote-info;echo)
   else
-    echo noob
     set SCM_GIT_DETACHED "true"
     set -l detached_prefix
     if bash-it _git-tag > /dev/null
