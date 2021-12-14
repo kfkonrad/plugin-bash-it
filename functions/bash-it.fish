@@ -1,14 +1,15 @@
 function bash-it -d "My package"
-  bash-it-$argv[1]
+  bash-it-$argv[1] $argv[2]
 end
 
+# change friendly-ref to … if $argv[1] is set
 function bash-it-git_prompt_info
   bash-it _git-hide-status; and return
   set -g SCM_PREFIX
   set -g SCM_BRANCH
   set -g SCM_STATE
   set -g SCM_SUFFIX
-  bash-it git_prompt_vars
+  bash-it git_prompt_vars $argv[1]
   echo -e "$SCM_PREFIX""$SCM_BRANCH""$SCM_STATE""$SCM_SUFFIX"
 end
 
@@ -87,7 +88,11 @@ function bash-it-_git-branch
 end
 
 function bash-it-_git-friendly-ref
-  bash-it _git-branch || bash-it _git-tag || bash-it _git-commit-description || bash-it _git-short-sha
+  if test -z "$argv[1]"
+    bash-it _git-branch || bash-it _git-tag || bash-it _git-commit-description || bash-it _git-short-sha
+  else
+    echo -n …
+  end
 end
 
 function bash-it-_git-tag
@@ -219,7 +224,7 @@ end
 function bash-it-git_prompt_vars
   if bash-it _git-branch > /dev/null
     set -l SCM_GIT_DETACHED "false"
-    set SCM_BRANCH "$SCM_THEME_BRANCH_PREFIX"(bash-it _git-friendly-ref)(bash-it _git-remote-info;echo)
+    set SCM_BRANCH "$SCM_THEME_BRANCH_PREFIX"(bash-it _git-friendly-ref $argv[1])(bash-it _git-remote-info;echo)
   else
     set SCM_GIT_DETACHED "true"
     set -l detached_prefix
@@ -228,7 +233,7 @@ function bash-it-git_prompt_vars
     else
       set detached_prefix $SCM_THEME_DETACHED_PREFIX
     end
-    set SCM_BRANCH "$detached_prefix"(bash-it _git-friendly-ref)
+    set SCM_BRANCH "$detached_prefix"(bash-it _git-friendly-ref $argv[1])
   end
 
   set -l commits_behind_ahead (bash-it _git-upstream-behind-ahead)
